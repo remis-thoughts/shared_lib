@@ -1,0 +1,9 @@
+{
+  "name": "shared_lib",
+  "version": "1.0.0",
+  "repo": "remis-thoughts/shared_lib",
+  "description": "A tool for generating compiler options when creating shared libraries",
+  "keywords": ["compiler", "library"],
+  "license": "BSD",
+  "src": ["shared_lib"]
+}

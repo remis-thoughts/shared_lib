@@ -1,0 +1,70 @@
+#!/bin/sh
+
+PLATFORM=$(uname -o 2>/dev/null || uname -s)
+
+while getopts ":psdhl:" opt; do
+	case $opt in
+		p)
+			case $PLATFORM in
+				GNU/Linux|FreeBSD|DragonFly|NetBSD|OpenBSD|Darwin|Msys|Cygwin)
+					printf 'lib'
+					;;
+				*)
+					echo "unknown platform '$PLATFORM'" >&2
+					exit 1
+			esac
+			;;
+		d)
+			case $PLATFORM in
+				GNU/Linux|FreeBSD|DragonFly|NetBSD|OpenBSD)
+					printf 'so'
+					;;
+				Darwin)
+					printf 'dylib'
+					;;
+				Msys|Cygwin)
+					printf 'dll'
+					;;
+				*)
+					echo "unknown platform '$PLATFORM'" >&2
+					exit 1
+			esac
+			;;
+		s)
+			case $PLATFORM in
+				GNU/Linux|FreeBSD|DragonFly|NetBSD|OpenBSD|Darwin|Msys|Cygwin)
+					printf 'a'
+					;;
+				*)
+					echo "unknown platform '$PLATFORM'" >&2
+					exit 1
+			esac
+			;;
+		l)
+			case $PLATFORM in
+				GNU/Linux|FreeBSD|DragonFly|NetBSD|OpenBSD)
+					printf -- '-shared -Wl,-soname -Wl,' "$OPTARG"
+					;;
+				Darwin)
+					printf -- '-dynamiclib -install_name %s' "$OPTARG"
+					;;
+				Msys|Cygwin)
+					printf -- ''
+					;;
+				*)
+					echo "unknown platform '$PLATFORM'" >&2
+					exit 1
+			esac
+			;;
+		h)
+			echo "Usage shared_lib [options]"
+			echo "  -p: shared library prefix"
+			echo "  -s: static shared library suffix"
+			echo "  -d: dynamic shared library suffix"
+			echo "  -l [name]: compiler argument for shared library called [name]"
+			;;
+		\?)
+			echo "invalid argument '$OPTARG'" >&2
+			exit 1
+	esac
+done
