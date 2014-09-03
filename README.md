@@ -1,6 +1,6 @@
 # shared_lib
 
-A tool for generating compiler options when creating shared libraries. This project is intended to be a comprehensive list of per-platform shared library prefixes & suffixes, and per-platform-per-compiler shared library generation options. It has a long way to go :)
+A cross-platform tool for generating compiler options when creating shared libraries. This project is intended to be a comprehensive list of per-platform shared library prefixes & suffixes, and per-platform-per-compiler shared library generation options (it still has a long way to go :). `shared_lib`'s use-case is similar to [libtool's](https://www.gnu.org/software/libtool), however `shared_lib` just generates command line options for other tools (like [pkg-config](http://www.freedesktop.org/wiki/Software/pkg-config)) instead of driving the linking process like libtool does.
 
 ## Usage
 
@@ -8,9 +8,8 @@ It can print the following strings to `STDOUT` (without a trailing new-line). Th
 
 ````
 Usage shared_lib [options]
-  -p: shared library prefix
-  -s: static shared library suffix
-  -d: dynamic shared library suffix
+  -s [name]: static shared library name
+  -d [name]: dynamic shared library name
   -l [name]: compiler argument for shared library called [name]
 ````
 

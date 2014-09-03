@@ -2,28 +2,18 @@
 
 PLATFORM=$(uname -o 2>/dev/null || uname -s)
 
-while getopts ":psdhl:" opt; do
+while getopts ":s:d:hl:" opt; do
 	case $opt in
-		p)
-			case $PLATFORM in
-				GNU/Linux|FreeBSD|DragonFly|NetBSD|OpenBSD|Darwin|Msys|Cygwin)
-					printf 'lib'
-					;;
-				*)
-					echo "unknown platform '$PLATFORM'" >&2
-					exit 1
-			esac
-			;;
 		d)
 			case $PLATFORM in
 				GNU/Linux|FreeBSD|DragonFly|NetBSD|OpenBSD)
-					printf 'so'
+					printf 'lib%s.so' "$OPTARG"
 					;;
 				Darwin)
-					printf 'dylib'
+					printf 'lib%s.dylib' "$OPTARG"
 					;;
 				Msys|Cygwin)
-					printf 'dll'
+					printf '%s.dll' "$OPTARG"
 					;;
 				*)
 					echo "unknown platform '$PLATFORM'" >&2
@@ -32,8 +22,11 @@ while getopts ":psdhl:" opt; do
 			;;
 		s)
 			case $PLATFORM in
-				GNU/Linux|FreeBSD|DragonFly|NetBSD|OpenBSD|Darwin|Msys|Cygwin)
-					printf 'a'
+				GNU/Linux|FreeBSD|DragonFly|NetBSD|OpenBSD|Darwin)
+					printf 'lib%s.a' "$OPTARG"
+					;;
+				Msys|Cygwin)
+					printf '%s.lib' "$OPTARG"
 					;;
 				*)
 					echo "unknown platform '$PLATFORM'" >&2
@@ -43,10 +36,10 @@ while getopts ":psdhl:" opt; do
 		l)
 			case $PLATFORM in
 				GNU/Linux|FreeBSD|DragonFly|NetBSD|OpenBSD)
-					printf -- '-shared -Wl,-soname -Wl,' "$OPTARG"
+					printf -- '-shared -Wl,-soname -Wl,lib%s.so' "$OPTARG"
 					;;
 				Darwin)
-					printf -- '-dynamiclib -install_name %s' "$OPTARG"
+					printf -- '-dynamiclib'
 					;;
 				Msys|Cygwin)
 					printf -- ''
@@ -58,9 +51,8 @@ while getopts ":psdhl:" opt; do
 			;;
 		h)
 			echo "Usage shared_lib [options]"
-			echo "  -p: shared library prefix"
-			echo "  -s: static shared library suffix"
-			echo "  -d: dynamic shared library suffix"
+			echo "  -s [name]: static shared library name"
+			echo "  -d [name]: dynamic shared library name"
 			echo "  -l [name]: compiler argument for shared library called [name]"
 			;;
 		\?)
